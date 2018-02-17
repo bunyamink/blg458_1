@@ -26,6 +26,6 @@ sundays1 start end = sundays' start end
       | y > end = rest
       | otherwise = if dayOfWeek y m 1 == 1 then rest + 1 else rest
         where
-          nextY = y
-          nextM = m
+          nextY = y + 1
+          nextM = mod (m + 1) 13
           rest = 0
