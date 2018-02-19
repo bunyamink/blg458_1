@@ -7,7 +7,9 @@ dayOfWeek y m d = mod ((d + t1 + k + t2 + t3) + 5 * j) 7
     k = mod y 100
     m' :: Integer
     m'
-      | m <= 2 = m + 12
+      | m >= 2 = m + 1
+      | m == 1 = 14
+      | m == 0 = 13
       | otherwise = m
     t1 :: Integer
     t1 = floor (fromIntegral (13 * (m' + 1)) / 5)
@@ -17,13 +19,4 @@ dayOfWeek y m d = mod ((d + t1 + k + t2 + t3) + 5 * j) 7
     t3 = floor (fromIntegral j / 4)
 
 sundays1 :: Integer -> Integer -> Integer
-sundays1 start end = sundays' start 1
-  where
-    sundays' :: Integer -> Integer -> Integer
-    sundays' y m
-      | y > end = rest
-      | otherwise = if dayOfWeek y m 1 == 1 then rest + 1 else rest
-        where
-          nextY = y + 1
-          nextM = mod (m + 1) 11
-          rest = sundays' nextY nextM
+sundays1 start end 

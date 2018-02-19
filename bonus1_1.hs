@@ -1,7 +1,5 @@
-import Debug.Trace
-
-dayOfWeek :: Integer -> Integer -> Integer -> (Integer,Integer,Integer,Integer,Integer,Integer,Integer)
-dayOfWeek y m d = traceShowId (j,k,m',t1,t2,t3,res)  
+dayOfWeek :: Integer -> Integer -> Integer -> Integer
+dayOfWeek y m d = mod ((d + t1 + k + t2 + t3) + 5 * j) 7  
   where
     j :: Integer
     j = quot y 100
@@ -19,5 +17,3 @@ dayOfWeek y m d = traceShowId (j,k,m',t1,t2,t3,res)
     t2 = floor (fromIntegral k / 4)
     t3 :: Integer
     t3 = floor (fromIntegral j / 4)
-    res :: Integer
-    res = mod ((d + t1 + k + t2 + t3) + 5 * j) 7
