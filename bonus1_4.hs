@@ -17,13 +17,11 @@ sundays2 start end = sundays' 1 start
   where
     sundays' :: Integer -> Integer -> Integer
     sundays' m y
-      | mod weekday 7 == 0 = n + 1
       | y > end = n
+      | otherwise = if mod weekday 7 == 0 then n + 1 else n      
       where
         days = dayInMonth m y
-        weekday = weekday + (mod days 7)
-        nextY 
-          | m == 12 = y + 1
-          | otherwise = y
+        weekday = weekday + mod days 7
+        nextY = if m == 11 then y + 1 else y
         nextM = mod (m + 1) 12
-        n = sundays' nextY nextM
+        n = if y > end then 1 else sundays' nextM nextY

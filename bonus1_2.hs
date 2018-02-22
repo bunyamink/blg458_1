@@ -24,8 +24,6 @@ sundays1 start end = sundays' start 1
       | y > end = rest
       | otherwise = if dayOfWeek y m 1 == 1 then rest + 1 else rest
         where
-          nextY 
-           | m == 12 = y + 1
-           | otherwise = y
+          nextY = if m == 11 then y + 1 else y
           nextM = mod (m + 1) 12
-          rest = sundays' nextY nextM
+          rest = if y > end then 1 else sundays' nextY nextM
