@@ -1,5 +1,5 @@
 dayOfWeek :: Integer -> Integer -> Integer -> Integer
-dayOfWeek y m d = mod ((d + t1 + k + t2 + t3) + 5 * j) 7  
+dayOfWeek y m d = mod ((d + t1 + k + t2 + t3) + 5 * j) 7
   where
     j :: Integer
     j = quot y 100
