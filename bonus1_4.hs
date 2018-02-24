@@ -21,8 +21,7 @@ sundays2 start end = sundays' 1 start
       | otherwise = if mod weekday 7 == 0 then n + 1 else n      
       where
         days = dayInMonth m y
-        a = 2 
-        weekday = a + mod days 7
+        weekday = weekday + mod days 7
         nextY = if m == 11 then y + 1 else y
         nextM = mod (m + 1) 12
         n = if y > end then 1 else sundays' nextM nextY
