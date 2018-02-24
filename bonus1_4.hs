@@ -13,15 +13,15 @@ dayInMonth m y = days
     | otherwise = 31
 
 sundays2 :: Integer -> Integer -> Integer
-sundays2 start end = sundays' 1 start
+sundays2 start end = sundays' 1 start 2
   where
-    sundays' :: Integer -> Integer -> Integer
-    sundays' m y
-      | y > end = n
+    sundays' :: Integer -> Integer -> Integer -> Integer
+    sundays' m y w
+      | y > end = n - 1
       | otherwise = if mod weekday 7 == 0 then n + 1 else n      
       where
         days = dayInMonth m y
-        weekday = weekday + mod days 7
+        weekday = w + mod days 7
         nextY = if m == 11 then y + 1 else y
         nextM = mod (m + 1) 12
-        n = if y > end then 1 else sundays' nextM nextY
+        n = if y > end then 1 else sundays' nextM nextY weekday
