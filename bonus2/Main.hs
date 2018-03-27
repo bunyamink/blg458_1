@@ -65,21 +65,22 @@ convertSuit c
   
 convertRank :: Char -> Rank
 convertRank c
-  | c == 'a' || c == 'A' || c == '4' = Ace
-  | c == 'k' || c == 'K' || c == '3' = King
-  | c == 'q' || c == 'Q' || c == '2' = Queen
-  | c == 'j' || c == 'J' || c == '1' = Jack
+  | c == 'a' || c == 'A' = Ace
+  | c == 'k' || c == 'K' = King
+  | c == 'q' || c == 'Q' = Queen
+  | c == 'j' || c == 'J' = Jack
+  | isDigit c == True = Num (digitToInt c)
   | otherwise = error "Wrong chracter"
 
 convertCard :: Char -> Char -> Card
 convertCard s r = (Card {suit = (convertSuit s), rank = (convertRank r)})
 
 -- Card listesi döndürülecek
-readCards :: IO ()
+readCards :: IO ()--[Card]
 readCards = do line <- getLine
                if line == "."
-                   then return ()
-                   else readCards
+                   then return () --return ([(convertCard 'd' 'a')])
+                   else readCards --(convertCard 'd' 'a') : readCards
 
 convertMove :: Char -> Char -> Char -> Move
 convertMove m s r
@@ -87,21 +88,21 @@ convertMove m s r
   | m == 'r' || m == 'R' = Discard (Card {suit = (convertSuit s), rank = (convertRank r)})
   
 -- Move listesi döndürülecek
-readMoves :: IO ()
+readMoves :: IO () --[Move]
 readMoves = do line <- getLine
                if line == "."
-                    then return ()
-                    else readMoves
+                    then return () --return ([(convertMove 'm' 'c' 'k')])
+                    else readMoves --(convertMove 'm' 'c' 'k') : readMoves
 
 main :: IO ()
 main = do putStrLn "Enter cards:"
-          cards <- readCards
+          --cards <- readCards
           -- putStrLn (show cards)
           putStrLn "Enter moves:"
-          moves <- readMoves
+          --moves <- readMoves
           -- putStrLn (show moves)
           putStrLn "Enter goal:"
-          line <- getLine
-          let goal = read line :: Integer
-          let score = runGame cards moves goal
-          putStrLn ("Score: " ++ show score)
+          --line <- getLine
+          --let goal = read line :: Integer
+          --let score = runGame cards moves goal
+          --putStrLn ("Score: " ++ show score)
