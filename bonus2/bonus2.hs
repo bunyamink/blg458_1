@@ -39,3 +39,11 @@ sumCards cs = helper cs 0
     helper :: [Card] -> Integer -> Integer
     helper [] acc = acc
     helper (c:cs) acc = helper cs (acc + cardValue c)
+
+score :: [Card] -> Integer -> Integer
+score cs g
+  | allSameColor cs == True = quot ((sumCards cs) - g) 2
+  | sumCards cs >= g = 3 * ((sumCards cs) - g)
+  | otherwise = ((sumCards cs) - g)
+
+data State = State {cardList :: [Card], heldCard :: [Card], goal :: Integer}
