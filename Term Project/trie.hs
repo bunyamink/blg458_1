@@ -21,21 +21,20 @@ insert (x:xs) trie@(Trie end m)  = case M.lookup x ts of
                                           newChildren = M.insert x childNode ts
 
 insertList :: [Word] -> Trie
-insertList []     = empty
-insertList (x:xs) = insert x (insertList xs)
+insertList xs = foldr insert empty xs
 
 search :: Word -> Trie -> Bool
 search []     trie@(Trie e _) = e
 search (x:xs) trie@(Trie _ m) = fromMaybe False (search xs <$> M.lookup x m)
 
 getWords :: Trie -> [Word]
-getWords = undefined
+getWords trie@(Trie e m)= map (fst children) . filter e . M.toList m
 
 prefix :: Word -> Trie -> Maybe [Word]
-prefix []     trie@(Trie e _)     = Just ["as"] 
-prefix (x:xs) trie@(Trie e _)     = case M.lookup x (children trie) of
-                                         Nothing -> Nothing
-                                         Just t' -> prefix xs t'
+prefix [x]     trie@(Trie e _)     = Just ["s"] 
+prefix (x:xs)  trie@(Trie e _)     = case M.lookup x (children trie) of
+                                          Nothing -> Nothing
+                                          Just t' -> prefix xs t'
 
   
 ss = do selected <- getLine
