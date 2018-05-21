@@ -67,9 +67,16 @@ main = do args <- getArgs
             do putStrLn "Enter Word/Prefix:"
                wrd <- getLine
                let x = insert wrd mainTrie
-               print x
+               --print x
+               putStrLn "New word is added!"
             else if selected == "s" then
               do putStrLn "Enter Word/Prefix:"
                  wrd <- getLine
                  if search wrd mainTrie then putStrLn "Exists in vocabulary" else putStrLn "NOT Exists!"
-                   else do putStrLn "sss"
+                   else if selected == "e" then
+                     do return ()
+                     else if selected == "f" then
+                       do putStrLn "find"
+                       else if selected == "p" then
+                         do putStrLn "prefix"
+                         else putStrLn "sss"
