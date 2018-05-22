@@ -44,6 +44,7 @@ prefix (x:xs)  trie@(Trie e _)     = case M.lookup x (children trie) of
                                           Just t' -> prefix xs t'
         
 
+printMenu :: IO ()
 printMenu = do putStrLn "a) Add word"
                putStrLn "s) Search word"
                putStrLn "f) Find words with prefix"
@@ -51,32 +52,28 @@ printMenu = do putStrLn "a) Add word"
                putStrLn "e) exit"
                putStrLn "Enter Action: "
 
+mainLoop :: Trie -> IO ()
+mainLoop t = do printMenu
+                selected <- getLine
+                case selected of 
+                     "a" -> do putStrLn "Enter Word/Prefix:"
+                               wrd <- getLine
+                               let x = insert wrd t
+                               putStrLn "New word is added!"
+                               mainLoop x
+                     "s" -> do putStrLn "Enter Word/Prefix:"
+                               wrd <- getLine
+                               if search wrd t then putStrLn "Exists in vocabulary" else putStrLn "NOT Exists!"
+                               mainLoop t
+                     "f" -> putStrLn "ss"
+                     "p" -> print t
+                     "e" -> do return ()
 
 main = do args <- getArgs
           let fileName = head args
           handle <- openFile fileName ReadMode
           contents <- hGetContents handle
           let singlewords = words contents
-          --print singlewords
           let mainTrie = insertList singlewords
-          --let mainTrie = insertList $ words contents
-          --print mainTrie
-          printMenu
-          selected <- getLine
-          if selected == "a" then
-            do putStrLn "Enter Word/Prefix:"
-               wrd <- getLine
-               let x = insert wrd mainTrie
-               --print x
-               putStrLn "New word is added!"
-            else if selected == "s" then
-              do putStrLn "Enter Word/Prefix:"
-                 wrd <- getLine
-                 if search wrd mainTrie then putStrLn "Exists in vocabulary" else putStrLn "NOT Exists!"
-                   else if selected == "e" then
-                     do return ()
-                     else if selected == "f" then
-                       do putStrLn "find"
-                       else if selected == "p" then
-                         do putStrLn "prefix"
-                         else putStrLn "sss"
+          mainLoop mainTrie
+          
