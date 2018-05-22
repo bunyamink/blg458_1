@@ -20,13 +20,12 @@ empty = Trie {end=False, children=M.empty}
 -- If not add new children 
 insert :: Word -> Trie -> Trie
 insert []     trie@(Trie _ m)    = Trie {end = True, children = m }
-insert (x:xs) trie@(Trie end m)  = case M.lookup x c of
+insert (x:xs) trie@(Trie end m)  = case M.lookup x m of
                                         Nothing -> trie {children=M.insert x (insert xs childNode) newChildren}
-                                        Just t  -> trie {children=M.insert x (insert xs t) c}
+                                        Just t  -> trie {children=M.insert x (insert xs t) m}
                                         where
-                                          c = children trie
                                           childNode = empty
-                                          newChildren = M.insert x childNode c
+                                          newChildren = M.insert x childNode m
 
 -- insert all words to trie start with empty trie
 insertList :: [Word] -> Trie
@@ -35,17 +34,12 @@ insertList xs = foldr insert empty xs
 -- search char by char if trie's children have first character of word, then continue children of trie
 -- when last character come control if this is end or not. If end is true then return true 
 search :: Word -> Trie -> Bool
-search [x]   trie@(Trie _ m) = case M.lookup x c of
+search [x]   trie@(Trie _ m) = case M.lookup x m of
                                      Nothing -> False
                                      Just t  -> if (end t) == True then True else False
-                                     where
-                                       c = children trie
-search (x:xs) trie@(Trie _ m) = case M.lookup x c of
+search (x:xs) trie@(Trie _ m) = case M.lookup x m of
                                      Nothing -> False
                                      Just t  -> search xs t
-                                     where
-                                       c = children trie
-
 
 getWords :: Trie -> [Word]
 getWords trie@(Trie e m)= getWords' (M.toList m) []
