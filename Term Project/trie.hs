@@ -1,31 +1,51 @@
-import qualified Data.Map as M --(can be shortened)
+-- Bünyamin KURT Functional Programming Term Project
+-- 150140145
+-- empty, insert, insertList and search functions done. getWords and prefix could not implemented.
+import qualified Data.Map as M 
 import Data.Maybe
 import System.Environment
 import System.IO
 import Prelude hiding (Word,empty)
 
+-- Define Trie
 data Trie = Trie {end :: Bool, children :: M.Map Char Trie} deriving (Show)
 type Word = String
 
+-- Create empty trie 
 empty :: Trie
 empty = Trie {end=False, children=M.empty}
 
+-- insert a word into a Trie
+-- First check if trie have first character of word. If have then continue with children trie
+-- If not add new children 
 insert :: Word -> Trie -> Trie
 insert []     trie@(Trie _ m)    = Trie {end = True, children = m }
-insert (x:xs) trie@(Trie end m)  = case M.lookup x ts of
+insert (x:xs) trie@(Trie end m)  = case M.lookup x c of
                                         Nothing -> trie {children=M.insert x (insert xs childNode) newChildren}
-                                        Just t  -> trie {children=M.insert x (insert xs t) ts}
+                                        Just t  -> trie {children=M.insert x (insert xs t) c}
                                         where
-                                          ts = children trie
+                                          c = children trie
                                           childNode = empty
-                                          newChildren = M.insert x childNode ts
+                                          newChildren = M.insert x childNode c
 
+-- insert all words to trie start with empty trie
 insertList :: [Word] -> Trie
 insertList xs = foldr insert empty xs
 
+-- search char by char if trie's children have first character of word, then continue children of trie
+-- when last character come control if this is end or not. If end is true then return true 
 search :: Word -> Trie -> Bool
-search []     trie@(Trie e _) = e
-search (x:xs) trie@(Trie _ m) = fromMaybe False (search xs <$> M.lookup x m)
+search [x]   trie@(Trie _ m) = case M.lookup x c of
+                                     Nothing -> False
+                                     Just t  -> if (end t) == True then True else False
+                                     where
+                                       c = children trie
+search (x:xs) trie@(Trie _ m) = case M.lookup x c of
+                                     Nothing -> False
+                                     Just t  -> search xs t
+                                     where
+                                       c = children trie
+
 
 getWords :: Trie -> [Word]
 getWords trie@(Trie e m)= getWords' (M.toList m) []
@@ -33,17 +53,13 @@ getWords trie@(Trie e m)= getWords' (M.toList m) []
     --getWords' :: [] -> [] -> [Words]
     getWords' (x:xs) w = undefined
 
-d = insertList ["ali", "abla", "baba", "sade"]
-ch = children d
-ts = M.toList ch
-
 prefix :: Word -> Trie -> Maybe [Word]
 prefix [x]     trie@(Trie e _)     = Just ["s"] 
 prefix (x:xs)  trie@(Trie e _)     = case M.lookup x (children trie) of
                                           Nothing -> Nothing
                                           Just t' -> prefix xs t'
-        
 
+-- print main menu										  
 printMenu :: IO ()
 printMenu = do putStrLn "a) Add word"
                putStrLn "s) Search word"
@@ -52,6 +68,10 @@ printMenu = do putStrLn "a) Add word"
                putStrLn "e) exit"
                putStrLn "Enter Action: "
 
+-- take a trie 
+-- print menu, get character from user
+-- according to character do functiıns and call again mainLoop
+-- if user enter "e" exit mainLoop
 mainLoop :: Trie -> IO ()
 mainLoop t = do printMenu
                 selected <- getLine
@@ -65,10 +85,17 @@ mainLoop t = do printMenu
                                wrd <- getLine
                                if search wrd t then putStrLn "Exists in vocabulary" else putStrLn "NOT Exists!"
                                mainLoop t
-                     "f" -> putStrLn "ss"
-                     "p" -> print t
+                     "f" -> do putStrLn "prefix did not implemented"
+                               mainLoop t
+                     "p" -> do print t
+                               mainLoop t
                      "e" -> do return ()
 
+-- main function get arguments from command line
+-- find fileName from command line
+-- read file and create list of words (singlewords)
+-- insert all words into to Trie (mainTrie)
+-- go mainLoop
 main = do args <- getArgs
           let fileName = head args
           handle <- openFile fileName ReadMode
